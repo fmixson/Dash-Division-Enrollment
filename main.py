@@ -18,6 +18,7 @@ pd.set_option('display.max_columns', None)
 fall = FallTableau(fall_tableau_df=fall_tableau_df)
 fall_semesters, fall_enrollments = fall.fall_semesters_and_enrollment_lists()
 fall2 = FallDivisionEnrollments(fall_enrollment=Fall_Enrollment_df, fall_semesters=fall_semesters, fall_max_enrollments=fall_enrollments)
+fall2.fall_table_cleanup()
 fall_max_enrollments, fall_semesters, fall_size = fall2.calculate_fall_enrollment()
 fall2.calculate_sessions()
 a = SpringTableau(tableau_df=tableau_df)
@@ -25,6 +26,8 @@ semester, enrollments = a.semester_and_enrollment_lists()
 
 b = SpringDivisionEnrollments(spring_enrollment=Spring_Enrollment_df, spring_semesters=semester, spring_max_enrollments=enrollments)
 enrollments, semesters, size = b.calculate_spring_enrollment()
+sessions_df, modalities_df, less_than_ten_df = b.calculate_sessions()
+print(type(modalities_df), modalities_df)
 c = BuildDashboard(enrollments=enrollments, semesters=semesters, size=size, fall_max_enrollments=fall_max_enrollments,
                  fall_semesters=fall_semesters, fall_size=fall_size)
 fall_bar_fig = c.construct_fall_graphs()
@@ -63,16 +66,16 @@ app.layout = html.Div(
     [
         dbc.Row(dbc.Col(html.Div('A Single Column'))),
         dbc.Row([
-            dbc.Col(html.Div(dcc.Graph(id='graph1', figure=fall_bar_fig)), width=6),
-            dbc.Col(html.Div(dcc.Graph(id='graph2', figure=bar_fig)), width=6),
-            # dbc.Col(html.Div(dash_table.DataTable(df4.to_dict('records'), [{'name': i, 'id': i} for i in df4.columns]),), width=3),
-            # dbc.Col(html.Div(dash_table.DataTable(df5.to_dict('records'), [{'name': i, 'id': i} for i in df5.columns])), width=3),
-            dbc.Col(html.Div('One of three columns'))
+            # dbc.Col(html.Div(dcc.Graph(id='graph1', figure=fall_bar_fig)), width=3),
+            dbc.Col(html.Div(dcc.Graph(id='graph2', figure=bar_fig)), width=4),
+            dbc.Col(html.Div(dash_table.DataTable(sessions_df.to_dict('records'), [{'name': i, 'id': i} for i in sessions_df.columns]),), width=4),
+            dbc.Col(html.Div(dash_table.DataTable(modalities_df.to_dict('records'), [{'name': i, 'id': i} for i in modalities_df.columns])), width=4),
+            # dbc.Col(html.Div('One of three columns'))
         ]),
         dbc.Row([
-            dbc.Col(html.Div(dash_table.DataTable(df3.to_dict('records'), [{'name': i, 'id': i} for i in df3.columns]),
+            dbc.Col(html.Div(dash_table.DataTable(less_than_ten_df.to_dict('records'), [{'name': i, 'id': i} for i in less_than_ten_df.columns]),
                              )),
-            dbc.Col(html.Div('One of three columns'))
+            # dbc.Col(html.Div(dash_table.DataTable(modalities_df.to_dict('records'), [{'name': i, 'id':i} for i in modalities_df]))))
         ])
     ]
 )

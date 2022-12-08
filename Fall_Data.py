@@ -36,6 +36,29 @@ class FallDivisionEnrollments:
         self.fall_semesters = fall_semesters
         self.fall_max_enrollments = fall_max_enrollments
 
+    def fall_table_cleanup(self):
+        for i in range(len(self.fall_enrollment)):
+            if 'Regular' in self.fall_enrollment.loc[i, 'Session']:
+                self.fall_enrollment.loc[i, 'Session'] = '18'
+            if 'Fifteen Week A' in self.fall_enrollment.loc[i, 'Session']:
+                self.fall_enrollment.loc[i,'Session'] = '15A'
+            if 'Fifteen Week B' in self.fall_enrollment.loc[i, 'Session']:
+                self.fall_enrollment.loc[i,'Session'] = '15B'
+            if 'Nine Week A' in self.fall_enrollment.loc[i, 'Session']:
+                    self.fall_enrollment.loc[i, 'Session'] = '9A'
+            if 'Nine Week B' in self.fall_enrollment.loc[i, 'Session']:
+                self.fall_enrollment.loc[i,'Session'] = '9B'
+            if 'Sixteen' in self.fall_enrollment.loc[i, 'Session']:
+                self.fall_enrollment.loc[i,'Session'] = '16'
+            if 'Twelve' in self.fall_enrollment.loc[i, 'Session']:
+                self.fall_enrollment.loc[i,'Session'] = '12'
+            if 'Six' in self.fall_enrollment.loc[i, 'Session']:
+                self.fall_enrollment.loc[i,'Session'] = '6'
+            if 'Enrollment' in self.fall_enrollment.loc[i, 'Session']:
+                self.fall_enrollment.loc[i,'Session'] = 'Open'
+        print(self.fall_enrollment)
+        return self.fall_enrollment
+
     def calculate_fall_enrollment(self):
         fall_size = [0, 0, 0, 0, 0, 0]
         fall_size_enrollment = self.fall_enrollment['Size'].sum()
@@ -47,29 +70,9 @@ class FallDivisionEnrollments:
 
     def calculate_sessions(self):
 
-        for i in range(len(self.fall_enrollment)):
-
-            if 'Regular' in self.fall_enrollment.loc[i, 'Session']:
-                self.fall_enrollment.loc[i, 'Session'] = '18'
-            if 'Fifteen' in self.fall_enrollment.loc[i, 'Session']:
-                self.fall_enrollment.loc[i,'Session'] = '15'
-            if '10/17' in self.fall_enrollment.loc[i, 'Session']:
-                self.fall_enrollment.loc[i,'Session'] = '9A'
-            if '10/18' in self.fall_enrollment.loc[i, 'Session']:
-                    self.fall_enrollment.loc[i, 'Session'] = '9A'
-            if '10/13' in self.fall_enrollment.loc[i, 'Session']:
-                self.fall_enrollment.loc[i,'Session'] = '9B'
-            if '10/14' in self.fall_enrollment.loc[i, 'Session']:
-                self.fall_enrollment.loc[i,'Session'] = '9B'
-            if '9/6' in self.fall_enrollment.loc[i, 'Session']:
-                self.fall_enrollment.loc[i,'Session'] = '15'
-            if '9/26' in self.fall_enrollment.loc[i, 'Session']:
-                self.fall_enrollment.loc[i,'Session'] = '12'
-            if 'Six' in self.fall_enrollment.loc[i, 'Session']:
-                self.fall_enrollment.loc[i,'Session'] = '6'
-
-        sessions_df = self.fall_enrollment.groupby('Session').agg({'Class': 'count', 'Size':'sum', 'Max': 'sum'})
-
+        sessions_df = self.fall_enrollment.groupby('Session').agg({'Class': 'count', 'Size':'sum', 'Max': 'sum'}).reset_index()
+        # df4['Fill'] = df4['Size'] / df4['Max']
+        sessions_df['Fill'] = sessions_df['Size'] / sessions_df['Max']
         print(sessions_df)
 
 
