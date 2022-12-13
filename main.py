@@ -26,8 +26,8 @@ semester, enrollments = a.semester_and_enrollment_lists()
 
 b = SpringDivisionEnrollments(spring_enrollment=Spring_Enrollment_df, spring_semesters=semester, spring_max_enrollments=enrollments)
 enrollments, semesters, size = b.calculate_spring_enrollment()
-sessions_df, modalities_df, less_than_ten_df = b.calculate_sessions()
-print(type(modalities_df), modalities_df)
+sessions_df, modalities_df = b.calculate_sessions()
+
 c = BuildDashboard(enrollments=enrollments, semesters=semesters, size=size, fall_max_enrollments=fall_max_enrollments,
                  fall_semesters=fall_semesters, fall_size=fall_size)
 fall_bar_fig = c.construct_fall_graphs()
@@ -73,8 +73,8 @@ app.layout = html.Div(
             # dbc.Col(html.Div('One of three columns'))
         ]),
         dbc.Row([
-            dbc.Col(html.Div(dash_table.DataTable(less_than_ten_df.to_dict('records'), [{'name': i, 'id': i} for i in less_than_ten_df.columns]),
-                             )),
+            dbc.Col(html.Div(dash_table.DataTable(subset_df.to_dict('records'), [{'name': i, 'id': i} for i in subset_df.columns]),
+                              )),
             # dbc.Col(html.Div(dash_table.DataTable(modalities_df.to_dict('records'), [{'name': i, 'id':i} for i in modalities_df]))))
         ])
     ]

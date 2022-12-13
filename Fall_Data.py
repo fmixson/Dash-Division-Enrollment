@@ -56,7 +56,7 @@ class FallDivisionEnrollments:
                 self.fall_enrollment.loc[i,'Session'] = '6'
             if 'Enrollment' in self.fall_enrollment.loc[i, 'Session']:
                 self.fall_enrollment.loc[i,'Session'] = 'Open'
-        print(self.fall_enrollment)
+        # print(self.fall_enrollment)
         return self.fall_enrollment
 
     def calculate_fall_enrollment(self):
@@ -73,6 +73,6 @@ class FallDivisionEnrollments:
         sessions_df = self.fall_enrollment.groupby('Session').agg({'Class': 'count', 'Size':'sum', 'Max': 'sum'}).reset_index()
         # df4['Fill'] = df4['Size'] / df4['Max']
         sessions_df['Fill'] = sessions_df['Size'] / sessions_df['Max']
-        print(sessions_df)
+        # print(sessions_df)
 
 

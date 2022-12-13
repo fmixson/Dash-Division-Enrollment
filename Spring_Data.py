@@ -41,16 +41,19 @@ class SpringDivisionEnrollments:
     def calculate_spring_enrollment(self):
         spring_size = [0, 0, 0, 0, 0, 0]
         spring_size_enrollment = self.spring_enrollment['Size'].sum()
+
         spring_max_enrollment_df = self.spring_enrollment['Max'].sum()
         self.spring_max_enrollments.append(spring_max_enrollment_df)
         spring_size.append(spring_size_enrollment)
         self.spring_semesters.append('Spring 2023')
+        print('Spring', self.spring_enrollment)
         return self.spring_max_enrollments, self.spring_semesters, spring_size
     
     def calculate_sessions(self):
-        print('first', self.spring_enrollment)
-        less_than_ten_df = self.spring_enrollment.loc[(self.spring_enrollment['Size'] <= 10) & ((self.spring_enrollment['Session'] == '18') |
-                                                    (self.spring_enrollment['Session'] == '15A') | (self.spring_enrollment['Session'] == '9A'))].reset_index()
+        # less_than_ten_df = self.spring_enrollment.loc[(self.spring_enrollment['Size'] <= 10) & ((self.spring_enrollment['Session'] == '18') |
+        #                                             (self.spring_enrollment['Session'] == '15A') | (self.spring_enrollment['Session'] == '9A'))].reset_index()
+
+
                            # & \
                            # (self.spring_enrollment[self.spring_enrollment['Session'] == '15A']) & \
                            # (self.spring_enrollment[self.spring_enrollment['Session'] == '15A'])
@@ -64,4 +67,4 @@ class SpringDivisionEnrollments:
         # # sessions_df['Fill'] = sessions_df['Size'] / sessions_df['Max']
         print(sessions_df)
         print(modalities_df)
-        return sessions_df, modalities_df, less_than_ten_df.loc[0:,3:]
+        return sessions_df, modalities_df
