@@ -50,21 +50,16 @@ class SpringDivisionEnrollments:
         return self.spring_max_enrollments, self.spring_semesters, spring_size
     
     def calculate_sessions(self):
-        # less_than_ten_df = self.spring_enrollment.loc[(self.spring_enrollment['Size'] <= 10) & ((self.spring_enrollment['Session'] == '18') |
-        #                                             (self.spring_enrollment['Session'] == '15A') | (self.spring_enrollment['Session'] == '9A'))].reset_index()
 
-
-                           # & \
-                           # (self.spring_enrollment[self.spring_enrollment['Session'] == '15A']) & \
-                           # (self.spring_enrollment[self.spring_enrollment['Session'] == '15A'])
-        self.spring_enrollment['Session'] = self.spring_enrollment['Session'].replace([''], " ")
-        print('Spring', self.spring_enrollment)
         sessions_df = self.spring_enrollment.groupby('Session').agg({'Class': 'count', 'Size':'sum', 'Max': 'sum'}).reset_index()
         sessions_df['Fill'] = sessions_df['Size'] / sessions_df['Max']
+
+        return sessions_df
+
+    def modality_calculation(self):
+
         modalities_df = self.spring_enrollment.groupby('Room').agg({'Class': 'count', 'Size':'sum', 'Max': 'sum'}).reset_index()
         modalities_df = modalities_df.iloc[1:5, 0:]
         modalities_df['Fill'] = modalities_df['Size'] / modalities_df['Max']
-        # # sessions_df['Fill'] = sessions_df['Size'] / sessions_df['Max']
-        print(sessions_df)
-        print(modalities_df)
-        return sessions_df, modalities_df
+
+        return modalities_df
