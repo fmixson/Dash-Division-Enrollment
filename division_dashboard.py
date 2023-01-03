@@ -40,8 +40,8 @@ def modality_barchart(dept):
         group_modalities = group_modalities.iloc[1:5, :]
 
         bar_fig = go.Figure(data=[
-            go.Bar(name='Size', x=group_modalities['Room'], y=group_modalities['Size']),
-            go.Bar(name='Capacity', x=group_modalities['Room'],y=group_modalities['Max'])
+            go.Bar(name='Size', x=group_modalities['Room'], y=group_modalities['Size'], text=group_modalities['Size']),
+            go.Bar(name='Capacity', x=group_modalities['Room'],y=group_modalities['Max'], text=group_modalities['Max'])
         ])
         bar_fig.update_layout(barmode='group')
         return bar_fig
@@ -53,8 +53,8 @@ def modality_barchart(dept):
         # group_modalities = group_modalities.iloc[1:5, :]
 
         bar_fig = go.Figure(data=[
-            go.Bar(name='Size', x=group_modalities['Room'], y=group_modalities['Size']),
-            go.Bar(name='Capacity', x=group_modalities['Room'], y=group_modalities['Max'])
+            go.Bar(name='Size', x=group_modalities['Room'], y=group_modalities['Size'], text=group_modalities['Size']),
+            go.Bar(name='Capacity', x=group_modalities['Room'], y=group_modalities['Max'], text=group_modalities['Max'])
         ])
         bar_fig.update_layout(barmode='group')
 
@@ -115,8 +115,8 @@ def session_barchart(dept):
             # group_sessions = group_sessions.iloc[1:5, :]
             print(group_sessions)
             bar_fig = go.Figure(data=[
-                go.Bar(name='Size', x=group_sessions['Session'], y=group_sessions['Size']),
-                go.Bar(name='Capacity', x=group_sessions['Session'], y=group_sessions['Max'])
+                go.Bar(name='Size', x=group_sessions['Session'], y=group_sessions['Size'], text=group_sessions['Size']),
+                go.Bar(name='Capacity', x=group_sessions['Session'], y=group_sessions['Max'], text=group_sessions['Max'])
             ])
             bar_fig.update_layout(barmode='group')
             return bar_fig
@@ -129,8 +129,8 @@ def session_barchart(dept):
             # group_sessions = group_sessions.iloc[1:5, :]
             print(group_sessions)
             bar_fig = go.Figure(data=[
-                go.Bar(name='Size', x=group_sessions['Session'], y=group_sessions['Size']),
-                go.Bar(name='Capacity', x=group_sessions['Session'], y=group_sessions['Max'])
+                go.Bar(name='Size', x=group_sessions['Session'], y=group_sessions['Size'], text=group_sessions['Size']),
+                go.Bar(name='Capacity', x=group_sessions['Session'], y=group_sessions['Max'], text=group_sessions['Max'])
             ])
             bar_fig.update_layout(barmode='group')
 
