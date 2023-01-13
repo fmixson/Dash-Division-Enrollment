@@ -5,7 +5,18 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy
 
-df = pd.read_csv('C:/Users/fmixson/PycharmProjects/DivisionEnrollment/Spring_Division_Enrollment.csv', encoding='Latin')
+df = pd.read_csv('C:/Users/fmixson/PycharmProjects/DivisionEnrollment/Business_Ed_Spring_Division_Enrollment.csv', encoding='Latin')
+# print(df.to_string())
+subset_df = df[['Dept', 'Modality', 'Class', 'Size', 'Max']]
+print(subset_df.to_string())
+group_modalities = subset_df.groupby('Modality').agg({'Class':'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+print(group_modalities.to_string())
+total_count = group_modalities['Class'].sum()
+print('total count', total_count)
+group_modalities['Perc'] = group_modalities['Class'] / total_count
+print('group modalities', group_modalities)
+fig = px.pie(group_modalities, values='Perc', names='Modality')
+fig.show()
 
 app = Dash(__name__,
            external_stylesheets=[dbc.themes.BOOTSTRAP]
@@ -37,7 +48,7 @@ def modality_barchart(dept):
         subset_df = df[['Dept', 'Modality', 'Class', 'Size', 'Max']]
         group_modalities = subset_df.groupby('Modality').agg({'Class':'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
         group_modalities['Fill'] = group_modalities['Size'] / group_modalities['Max']
-        group_modalities = group_modalities.iloc[1:5, :]
+        # group_modalities = group_modalities.iloc[1:5, :]
 
         bar_fig = go.Figure(data=[
             go.Bar(name='Size', x=group_modalities['Modality'], y=group_modalities['Size'], text=group_modalities['Size']),
@@ -112,7 +123,6 @@ def session_barchart(dept):
             group_sessions = subset_df.groupby('Session').agg(
                 {'Class': 'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
             group_sessions['Fill'] = group_sessions['Size'] / group_sessions['Max']
-            # group_sessions = group_sessions.iloc[1:5, :]
             print(group_sessions)
             bar_fig = go.Figure(data=[
                 go.Bar(name='Size', x=group_sessions['Session'], y=group_sessions['Size'], text=group_sessions['Size']),
@@ -126,7 +136,6 @@ def session_barchart(dept):
             group_sessions = subset_dff.groupby('Session').agg(
                 {'Class': 'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
             group_sessions['Fill'] = group_sessions['Size'] / group_sessions['Max']
-            # group_sessions = group_sessions.iloc[1:5, :]
             print(group_sessions)
             bar_fig = go.Figure(data=[
                 go.Bar(name='Size', x=group_sessions['Session'], y=group_sessions['Size'], text=group_sessions['Size']),
