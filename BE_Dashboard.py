@@ -4,19 +4,21 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy
+import openpyxl
 
 df = pd.read_csv('C:/Users/fmixson/PycharmProjects/DivisionEnrollment/Business_Ed_Spring_Division_Enrollment.csv', encoding='Latin')
-# print(df.to_string())
+# modality_and_session_df = pd.read_excel('C:/Users/fmixson/PycharmProjects/DivisionEnrollment/BE_Success_by_Modality.xlsx')
+# print(modality_and_session_df)
 subset_df = df[['Dept', 'Modality', 'Class', 'Size', 'Max']]
-print(subset_df.to_string())
+# print(subset_df.to_string())
 group_modalities = subset_df.groupby('Modality').agg({'Class':'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
-print(group_modalities.to_string())
+# print(group_modalities.to_string())
 total_count = group_modalities['Class'].sum()
-print('total count', total_count)
+# print('total count', total_count)
 group_modalities['Perc'] = group_modalities['Class'] / total_count
-print('group modalities', group_modalities)
-fig = px.pie(group_modalities, values='Perc', names='Modality')
-fig.show()
+# print('group modalities', group_modalities)
+# fig = px.pie(group_modalities, values='Perc', names='Modality')
+# fig.show()
 
 app = Dash(__name__,
            external_stylesheets=[dbc.themes.BOOTSTRAP]
@@ -28,14 +30,39 @@ app.layout = html.Div(
                  options=[{'label': dept, 'value': dept}
                           for dept in df['Dept'].unique()]
                  )),
+        # html.Div(
+        #     dcc.Dropdown(id='success_dept_dropdown',
+        #                  options=[{'label': dept, 'value': dept}
+        #                           for dept in modality_and_session_df['Dept'].unique()]
+        #                  )),
+
+        dbc.Row([
+        dbc.Col(html.H2('Modalities by % of Sections Offered'), width=6 ,style={'textAlign': 'center'}),
+        dbc.Col(html.H2('Sessions by % of Sections Offered'), width=6 ,style={'textAlign': 'center'})]),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='pie_chart'), width=6),
+        dbc.Col(dcc.Graph(id='modality_pie_chart'), width=6),
         dbc.Col(dcc.Graph(id='session_pie_chart'), width=6)
             ]),
     dbc.Row([
+        dbc.Col(html.H2('Modalities by % of Enrollment'), width=6 ,style={'textAlign': 'center'}),
+        dbc.Col(html.H2('Sessions by % of Enrollment'), width=6 ,style={'textAlign': 'center'})]),
+    dbc.Row([
+        dbc.Col(dcc.Graph(id='enroll_modality_pie_chart'), width=6),
+        dbc.Col(dcc.Graph(id='enroll_session_pie_chart'), width=6)
+    ]),
+    dbc.Row([
         dbc.Col(dcc.Graph(id='modality_barchart'), width=6),
         dbc.Col(dcc.Graph(id='session_barchart'), width=6)
-    ])
+    ]),
+    # dbc.Row([
+    #     dbc.Col(dcc.Graph(id='success_pie_chart'), width=6),
+
+    # ]),
+    # html.Div(
+    #     dcc.Dropdown(id='success_dept_dropdown',
+    #                  options=[{'label': dept, 'value': dept}
+    #                           for dept in modality_and_session_df['Dept'].unique()]
+    #                  )),
 
     ])
 
@@ -72,7 +99,7 @@ def modality_barchart(dept):
         return bar_fig
 
 @app.callback(
-    Output(component_id='pie_chart', component_property='figure'),
+    Output(component_id='modality_pie_chart', component_property='figure'),
     Input(component_id='dept_dropdown', component_property='value')
 )
 def modality_pie_chart(dept):
@@ -145,5 +172,72 @@ def session_barchart(dept):
 
             return bar_fig
 
+@app.callback(
+    Output(component_id='enroll_modality_pie_chart', component_property='figure'),
+    Input(component_id='dept_dropdown', component_property='value')
+)
+def modality_pie_chart(dept):
+    if dept is None:
+        subset_df = df[['Dept', 'Modality', 'Class', 'Size', 'Max']]
+        group_modalities = subset_df.groupby('Modality').agg({'Class':'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+        total_count = group_modalities['Size'].sum()
+        group_modalities['Perc'] = group_modalities['Size'] / total_count
+        fig = px.pie(group_modalities, values='Perc', names='Modality')
+        return fig
+    else:
+        subset_df = df[['Dept', 'Modality', 'Class', 'Size', 'Max']]
+        subset_dff = subset_df[subset_df['Dept'] == dept]
+        group_modalities = subset_dff.groupby('Modality').agg({'Class': 'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+        total_count = group_modalities['Size'].sum()
+        group_modalities['Perc'] = group_modalities['Size'] / total_count
+        fig = px.pie(group_modalities, values='Perc', names='Modality')
+        return fig
+
+
+@app.callback(
+    Output(component_id='enroll_session_pie_chart', component_property='figure'),
+    Input(component_id='dept_dropdown', component_property='value')
+)
+def session_pie_chart(dept):
+    if dept is None:
+        subset_df = df[['Dept', 'Session', 'Class', 'Size', 'Max']]
+        group_modalities = subset_df.groupby('Session').agg({'Class':'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+        total_count = group_modalities['Size'].sum()
+        group_modalities['Perc'] = group_modalities['Size'] / total_count
+        session_fig = px.pie(group_modalities, values='Perc', names='Session')
+        return session_fig
+    else:
+        subset_df = df[['Dept', 'Session', 'Class', 'Size', 'Max']]
+        subset_dff = subset_df[subset_df['Dept'] == dept]
+        group_modalities = subset_dff.groupby('Session').agg({'Class': 'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+        total_count = group_modalities['Size'].sum()
+        group_modalities['Perc'] = group_modalities['Size'] / total_count
+        session_fig = px.pie(group_modalities, values='Perc', names='Session')
+        return session_fig
+
+# @app.callback(
+#     Output(component_id='success_pie_chart', component_property='figure'),
+#     Input(component_id='success_dept_dropdown', component_property='value')
+# )
+# # def success_pie_chart(dept):
+#     if dept is None:
+#         # modality_and_session_subset = [['Dept', 'Class','Session', 'Completion', 'Success']]
+#         # print(type(modality_and_session_df))
+#         group_session = modality_and_session_df.groupby('Session').agg({'Class':'count', 'Success': 'sum', 'Completion': 'sum'}).reset_index()
+#
+#         group_session['Rate'] = group_session['Success'] / group_session['Completion']
+#         print(group_session)
+#         # group_modalities['Perc'] = group_modalities['Success'] / total_count
+#         success_fig = px.bar(group_session, y='Rate', x='Session')
+#         success_fig.show()
+#         return success_fig
+#     else:
+#         subset_df = df[['Dept', 'Session', 'Class', 'Size', 'Max']]
+#         subset_dff = subset_df[subset_df['Dept'] == dept]
+#         group_modalities = subset_dff.groupby('Session').agg({'Class': 'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+#         total_count = group_modalities['Class'].sum()
+#         group_modalities['Perc'] = group_modalities['Class'] / total_count
+#         success_fig = px.pie(group_modalities, values='Perc', names='Session')
+#         return success_fig
 
 app.run(debug=True)

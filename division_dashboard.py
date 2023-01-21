@@ -22,39 +22,39 @@ app.layout = html.Div(
         dbc.Col(dcc.Graph(id='session_pie_chart'), width=6)
             ]),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='modality_barchart'), width=6),
+        dbc.Col(dcc.Graph(id='Modality2_barchart'), width=6),
         dbc.Col(dcc.Graph(id='session_barchart'), width=6)
     ])
 
     ])
 
 @app.callback(
-    Output(component_id='modality_barchart', component_property='figure'),
+    Output(component_id='Modality2_barchart', component_property='figure'),
     Input(component_id='dept_dropdown', component_property='value')
 )
 def modality_barchart(dept):
     if dept is None:
-        subset_df = df[['Dept', 'Modality', 'Class', 'Size', 'Max']]
-        group_modalities = subset_df.groupby('Modality').agg({'Class':'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
-        group_modalities['Fill'] = group_modalities['Size'] / group_modalities['Max']
-        group_modalities = group_modalities.iloc[1:5, :]
-
-        bar_fig = go.Figure(data=[
-            go.Bar(name='Size', x=group_modalities['Modality'], y=group_modalities['Size'], text=group_modalities['Size']),
-            go.Bar(name='Capacity', x=group_modalities['Modality'],y=group_modalities['Max'], text=group_modalities['Max'])
-        ])
-        bar_fig.update_layout(barmode='group')
-        return bar_fig
-    else:
-        subset_df = df[['Dept', 'Modality', 'Class', 'Size', 'Max']]
-        subset_dff = subset_df[subset_df['Dept'] == dept]
-        group_modalities = subset_dff.groupby('Modality').agg({'Class': 'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+        subset_df = df[['Dept', 'Modality2', 'Class', 'Size', 'Max']]
+        group_modalities = subset_df.groupby('Modality2').agg({'Class':'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
         group_modalities['Fill'] = group_modalities['Size'] / group_modalities['Max']
         # group_modalities = group_modalities.iloc[1:5, :]
 
         bar_fig = go.Figure(data=[
-            go.Bar(name='Size', x=group_modalities['Modality'], y=group_modalities['Size'], text=group_modalities['Size']),
-            go.Bar(name='Capacity', x=group_modalities['Modality'], y=group_modalities['Max'], text=group_modalities['Max'])
+            go.Bar(name='Size', x=group_modalities['Modality2'], y=group_modalities['Size'], text=group_modalities['Size']),
+            go.Bar(name='Capacity', x=group_modalities['Modality2'],y=group_modalities['Max'], text=group_modalities['Max'])
+        ])
+        bar_fig.update_layout(barmode='group')
+        return bar_fig
+    else:
+        subset_df = df[['Dept', 'Modality2', 'Class', 'Size', 'Max']]
+        subset_dff = subset_df[subset_df['Dept'] == dept]
+        group_modalities = subset_dff.groupby('Modality2').agg({'Class': 'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+        group_modalities['Fill'] = group_modalities['Size'] / group_modalities['Max']
+        # group_modalities = group_modalities.iloc[1:5, :]
+
+        bar_fig = go.Figure(data=[
+            go.Bar(name='Size', x=group_modalities['Modality2'], y=group_modalities['Size'], text=group_modalities['Size']),
+            go.Bar(name='Capacity', x=group_modalities['Modality2'], y=group_modalities['Max'], text=group_modalities['Max'])
         ])
         bar_fig.update_layout(barmode='group')
 
@@ -66,19 +66,20 @@ def modality_barchart(dept):
 )
 def modality_pie_chart(dept):
     if dept is None:
-        subset_df = df[['Dept', 'Modality', 'Class', 'Size', 'Max']]
-        group_modalities = subset_df.groupby('Modality').agg({'Class':'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+        subset_df = df[['Dept', 'Modality2', 'Class', 'Size', 'Max']]
+        group_modalities = subset_df.groupby('Modality2').agg({'Class':'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
         total_count = group_modalities['Class'].sum()
         group_modalities['Perc'] = group_modalities['Class'] / total_count
-        fig = px.pie(group_modalities, values='Perc', names='Modality')
+        print(group_modalities)
+        fig = px.pie(group_modalities, values='Perc', names='Modality2')
         return fig
     else:
-        subset_df = df[['Dept', 'Modality', 'Class', 'Size', 'Max']]
+        subset_df = df[['Dept', 'Modality2', 'Class', 'Size', 'Max']]
         subset_dff = subset_df[subset_df['Dept'] == dept]
-        group_modalities = subset_dff.groupby('Modality').agg({'Class': 'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
+        group_modalities = subset_dff.groupby('Modality2').agg({'Class': 'count', 'Size': 'sum', 'Max': 'sum'}).reset_index()
         total_count = group_modalities['Class'].sum()
         group_modalities['Perc'] = group_modalities['Class'] / total_count
-        fig = px.pie(group_modalities, values='Perc', names='Modality')
+        fig = px.pie(group_modalities, values='Perc', names='Modality2')
         return fig
 
 @app.callback(
