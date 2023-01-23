@@ -42,7 +42,31 @@ for i in range(1, len(group_weeks)):
     group_weeks.loc[i, 'Total'] = group_weeks.loc[i, 'Course'] + group_weeks.loc[i-1, 'Total']
 print(group_weeks)
 
+sessions = ['1', '15L', '15B', '9A', '9B', '6A', '6B', '6C']
+for session in sessions:
+    session_df = df[df['Session Code'] == session]
+    subset_df = session_df[['Enrollment Add Date', 'Session Code', 'Course']]
+    group_dates = subset_df.groupby('Enrollment Add Date').count().reset_index()
 
+
+    day_count = 1
+    week_count = 1
+    for i in range(len(group_dates)):
+        if day_count < 7:
+            group_dates.loc[i, 'Week'] = week_count
+            day_count += 1
+        else:
+            group_dates.loc[i, 'Week'] = week_count
+            day_count = 1
+            week_count += 1
+
+    group_weeks = group_dates.groupby('Week').agg({'Course': 'sum'}).reset_index()
+    # print(type(group_weeks))
+    group_weeks.loc[0, 'Total'] = group_weeks.loc[0, 'Course']
+    for i in range(1, len(group_weeks)):
+        group_weeks.loc[i, 'Total'] = group_weeks.loc[i, 'Course'] + group_weeks.loc[i - 1, 'Total']
+        sessions_df[session] = group_weeks['Total']
+        # print('sessions', sessions_df)
 
 fig = px.line(group_weeks, x=group_weeks['Week'], y=group_weeks['Total'])
 # fig2 = px.scatter(group_dates, x=group_dates['Enrollment Add Date'], y=group_dates['Course'])
